@@ -32,6 +32,11 @@ import org.apache.ibatis.session.ResultHandler;
  *    我们其后再对占位符进行设值。StatementHandler通过parameterize(statement)方法对Statement进行设值；       
  * 2. StatementHandler通过List<E> query(Statement statement, ResultHandler resultHandler)方法
  *    来完成执行Statement，和将Statement对象返回的resultSet封装成List；
+ *
+ * method说明:
+ *  prepare方法是用来预编译SQL的
+ *  parameterize  设置参数
+ *  query/update  执行SQL
  * @author Clinton Begin
  */
 public interface StatementHandler {
