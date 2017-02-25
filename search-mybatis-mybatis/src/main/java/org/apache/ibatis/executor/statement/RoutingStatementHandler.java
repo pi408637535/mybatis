@@ -29,6 +29,16 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 /**
+ * 有点像代理模式
+ *
+ * RoutingStatementHandler类似路由器，在其构造函数中会根据Mapper文件中设置的StatementType来选择使用
+ * SimpleStatementHandler、PreparedStatementHandler和CallableStatementHandler，
+ * 其实现的接口StatementHandler的方法也是由这三个具体实现类来实现。
+ *
+ *
+ */
+
+/**
  * @author Clinton Begin
  */
 public class RoutingStatementHandler implements StatementHandler {
