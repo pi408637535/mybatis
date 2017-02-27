@@ -205,19 +205,32 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   *  下面就看看解析properties的具体方法
+   *
+   * @param context
+   * @throws Exception
+   */
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
       Properties defaults = context.getChildrenAsProperties();
+      //获取properties节点上resource属性的值
       String resource = context.getStringAttribute("resource");
       String url = context.getStringAttribute("url");
+      //resource和url不能同时配置
       if (resource != null && url != null) {
         throw new BuilderException("The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
       }
+      //把解析出的properties文件中所有属性全部都放进进Properties对象
       if (resource != null) {
         defaults.putAll(Resources.getResourceAsProperties(resource));
       } else if (url != null) {
         defaults.putAll(Resources.getUrlAsProperties(url));
       }
+      //将configuration对象中已配置的Properties属性与刚刚解析的融合
+      //configuration这个对象会装载所解析mybatis配置文件的所有节点元素，以后也会频频提到这个对象
+      //既然configuration对象用有一系列的get/set方法， 那是否就标志着我们可以使用java代码直接配置？
+      //答案是肯定的， 不过使用配置文件进行配置，优势不言而喻
       Properties vars = configuration.getVariables();
       if (vars != null) {
         defaults.putAll(vars);
