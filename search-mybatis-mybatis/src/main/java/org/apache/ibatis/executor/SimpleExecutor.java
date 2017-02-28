@@ -35,6 +35,11 @@ import org.apache.ibatis.transaction.Transaction;
  */
 public class SimpleExecutor extends BaseExecutor {
 
+  /**
+   * SimpleExecutor创建过程，先初始化BaseExecutor的静态变量org.apache.ibatis.logging.Log;
+   * @param configuration
+   * @param transaction
+   */
   public SimpleExecutor(Configuration configuration, Transaction transaction) {
     super(configuration, transaction);
   }

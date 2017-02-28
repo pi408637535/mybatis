@@ -108,6 +108,7 @@ public abstract class BaseExecutor implements Executor {
   }
 
   @Override
+  //SqlSession的update/insert/delete会调用此方法
   public int update(MappedStatement ms, Object parameter) throws SQLException {
     ErrorContext.instance().resource(ms.getResource()).activity("executing an update").object(ms.getId());
     if (closed) {
@@ -323,6 +324,7 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  //处理存储过程的out参数
   private void handleLocallyCachedOutputParameters(MappedStatement ms, CacheKey key, Object parameter, BoundSql boundSql) {
     if (ms.getStatementType() == StatementType.CALLABLE) {
       final Object cachedParameter = localOutputParameterCache.getObject(key);
@@ -339,7 +341,7 @@ public abstract class BaseExecutor implements Executor {
       }
     }
   }
-
+  //从数据库查
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
@@ -369,7 +371,8 @@ public abstract class BaseExecutor implements Executor {
   public void setExecutorWrapper(Executor wrapper) {
     this.wrapper = wrapper;
   }
-  
+
+  //延迟加载
   private static class DeferredLoad {
 
     private final MetaObject resultObject;

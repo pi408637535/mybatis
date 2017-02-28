@@ -526,6 +526,7 @@ public class Configuration {
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
+    //由于在解析SQLMapConfig对象时,我们配置了拦截器节点，所以InterceptorChain就有个我们配置的拦截器
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
