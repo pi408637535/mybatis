@@ -26,6 +26,13 @@ import java.util.Set;
 import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
+ * Mybatis的所有拦截器都是通过这个类来完成的动态代理
+ * 1.Executor 拦截器创建的过程中Configuration会调用拦截器链
+ * public Executor newExecutor(Transaction transaction, ExecutorType executorType){
+ *     ...
+ *     executor = (Executor) interceptorChain.pluginAll(executor);
+ * }
+ *
  * @author Clinton Begin
  */
 public class Plugin implements InvocationHandler {
@@ -40,9 +47,18 @@ public class Plugin implements InvocationHandler {
     this.signatureMap = signatureMap;
   }
 
+  /**
+   * 该方法的主要作用就是对比Mybatis拦截器链中，是否遇到了拦截对象。如果遇到则生成其拦截对象那个的代理对象
+   * @param target
+   * @param interceptor
+   * @return
+   */
   public static Object wrap(Object target, Interceptor interceptor) {
+    //获取Interceptor对象拦截的对象，以及所要拦截的的方法
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
+    //获取Mybatis拦截器链拦截到的对象
     Class<?> type = target.getClass();
+    //确认Mybatis拦截器链所拦截的对象与自定义拦截器所拦截的对象是否有包含关系
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
       return Proxy.newProxyInstance(
