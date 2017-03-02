@@ -32,6 +32,15 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 /**
+ * （1）使用JDBC的事务管理机制,就是利用Java.sql.Connection对象完成对事务的提交
+ （2）使用MANAGED的事务管理机制，这种机制mybatis自身不会去实现事务管理，而是让程序的容器（JBOSS,WebLogic）来实现对事务的管理
+ DefaultSqlSessionFactory设置的事务的隔离等级有5个：
+ （1）Connection.TRANSACTION_NONE表示不支持事务的常量
+ （2）Connection.TRANSACTION_READ_COMMITTED不可重复读和虚读可以发生
+ （3）Connection.TRANSACTION_READ_UNCOMMITTED表示可以发生脏读 (dirty read)、不可重复读和虚读 (phantom read) 的常量
+ （4）Connection.TRANSACTION_REPEATABLE_READ虚读可以发生
+ （5）Connection.TRANSACTION_SERIALIZABLE指示不可以发生脏读、不可重复读和虚读的常量
+ *
  * @author Clinton Begin
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
@@ -87,10 +96,13 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     return configuration;
   }
 
+  //最终是获得一个sqlsession
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
       final Environment environment = configuration.getEnvironment();
+      //JDBC是直接全部使用JDBC的提交和回滚功能。它依靠使用链接的数据源来管理事务的作用域
+      //MANAGED这个类型什么都不做，它从不提交、回滚和关闭连接，而是让窗口来管理事务的全部生命周期
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       final Executor executor = configuration.newExecutor(tx, execType);
