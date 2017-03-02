@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 
 /**
  * @author Clinton Begin
+ *
+ * ?  不清楚作用
  */
 public enum ResultSetType {
   FORWARD_ONLY(ResultSet.TYPE_FORWARD_ONLY),

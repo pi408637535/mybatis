@@ -21,6 +21,8 @@ package org.apache.ibatis.mapping;
  * STATEMENT 直接执行SQL语句
  * PREPARED 预编译SQL语句
  * CALLABLE  存储过程
+ *
+ * 默认值是 PREPARED
  */
 public enum StatementType {
   STATEMENT, PREPARED, CALLABLE

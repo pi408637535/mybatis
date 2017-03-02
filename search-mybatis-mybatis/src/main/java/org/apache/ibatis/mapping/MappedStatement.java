@@ -41,6 +41,7 @@ public final class MappedStatement {
   private String id;
   private Integer fetchSize;
   private Integer timeout;
+  //Statement 类型
   private StatementType statementType;
   private ResultSetType resultSetType;
   //对应一条SQL语句
