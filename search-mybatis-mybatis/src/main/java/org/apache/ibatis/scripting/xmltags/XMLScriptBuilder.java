@@ -31,6 +31,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author Clinton Begin
+ * 解析xml中各个节点sql部分的Builder
  */
 public class XMLScriptBuilder extends BaseBuilder {
 

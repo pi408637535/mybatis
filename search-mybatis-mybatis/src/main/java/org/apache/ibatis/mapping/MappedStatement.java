@@ -31,6 +31,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * MappedStatement维护了一条<select|update|delete|insert>节点的封装
  * 一个MappedStatement对象对应Mapper配置文件中的一个select/update/insert/delete节点，主要描述的是一条SQL语句
+ *
  * @author Clinton Begin
  */
 public final class MappedStatement {
@@ -44,7 +45,10 @@ public final class MappedStatement {
   //Statement 类型
   private StatementType statementType;
   private ResultSetType resultSetType;
-  //对应一条SQL语句
+  /**
+   * 对应一条SQL语句
+   * XML文件或注解映射的sql内容
+   */
   private SqlSource sqlSource;
   //每条语句都对就一个缓存，如果有的话。
   private Cache cache;

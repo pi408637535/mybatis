@@ -17,6 +17,8 @@ package org.apache.ibatis.scripting.xmltags;
 
 /**
  * @author Frank D. Martinez [mnesarco]
+ *
+ * VarDeclSqlNode：处理动态sql标签<bind>的SqlNode类。
  */
 public class VarDeclSqlNode implements SqlNode {
 
@@ -31,6 +33,7 @@ public class VarDeclSqlNode implements SqlNode {
   @Override
   public boolean apply(DynamicContext context) {
     final Object value = OgnlCache.getValue(expression, context.getBindings());
+    // 由于没有sql可append，仅是把bind标签的变量名和值保存至上下文参数列表内
     context.bind(name, value);
     return true;
   }

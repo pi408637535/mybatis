@@ -19,6 +19,10 @@ import java.util.List;
 
 /**
  * @author Clinton Begin
+ *
+ * MixedSqlNode：意为混合的SqlNode，它保存了其他多种SqlNode的集合，可以看做是一个List<SqlNode>列表，
+ *
+ *
  */
 public class MixedSqlNode implements SqlNode {
   private List<SqlNode> contents;

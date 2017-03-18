@@ -35,6 +35,7 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ * 解析xml文件中各个节点，比如select,insert,update,delete节点，内部会使用XMLScriptBuilder处理节点的sql部分，遍历产生的数据会丢到Configuration的mappedStatements中。
  */
 public class XMLStatementBuilder extends BaseBuilder {
 

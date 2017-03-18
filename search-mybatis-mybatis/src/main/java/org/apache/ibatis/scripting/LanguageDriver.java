@@ -23,6 +23,13 @@ import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
 
+/**
+ * LanguageDriver是一个辅助工具类，用于创建SqlSource。
+ * XMLLanguageDriver:用于创建动态、静态SqlSource。
+ * RawLanguageDriver：在确保只有静态sql时，可以使用，不得含有任何动态sql的内容，否则，请使用
+ * XMLLanguageDriver。它其实是对XMLLanguageDriver创建的结果进行唯静态sql检查而已，发现有动态sql的内容，就抛异常。
+ */
+
 public interface LanguageDriver {
 
   /**
