@@ -54,6 +54,10 @@ public class XMLStatementBuilder extends BaseBuilder {
     this.requiredDatabaseId = databaseId;
   }
 
+  /**
+   * 内部使用LanguageDriver
+   * languageRegistry.setDefaultDriverClass(XMLLanguageDriver.class);
+   */
   public void parseStatementNode() {
     String id = context.getStringAttribute("id");
     String databaseId = context.getStringAttribute("databaseId");
@@ -92,6 +96,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
     
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
+    // langDriver 默认使用XMLLanguageDriver，默认使用XMLLanguageDriver内部用 XMLScriptBuilder解析sql
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     String resultSets = context.getStringAttribute("resultSets");
     String keyProperty = context.getStringAttribute("keyProperty");

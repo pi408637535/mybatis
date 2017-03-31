@@ -90,6 +90,7 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+      //根据xpath解析mapper节点
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -115,6 +116,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+      //分别处理缓存，参数，返回值，sql,增|删|改|查节点
       cacheRefElement(context.evalNode("cache-ref"));
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
@@ -135,8 +137,11 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
+      //对每个节点，使用XMLStatementBuilder解析
+      //XMLStatementBuilder内部使用LanguageDriver 解析sql，并得到sqlSource
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
+        //解析一个 inset，delete，update，select 节点
         statementParser.parseStatementNode();
       } catch (IncompleteElementException e) {
         configuration.addIncompleteStatement(statementParser);

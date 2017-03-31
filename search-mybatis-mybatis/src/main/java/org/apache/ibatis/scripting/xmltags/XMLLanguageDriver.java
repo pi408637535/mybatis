@@ -30,6 +30,7 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Eduardo Macarron
+ * 内部会使用XMLScriptBuilder解析xml中的sql部分。
  */
 public class XMLLanguageDriver implements LanguageDriver {
 
