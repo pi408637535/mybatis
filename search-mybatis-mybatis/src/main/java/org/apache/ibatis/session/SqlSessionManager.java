@@ -331,11 +331,14 @@ public class SqlSessionManager implements SqlSessionFactory, SqlSession {
       final SqlSession sqlSession = SqlSessionManager.this.localSqlSession.get();
       if (sqlSession != null) {
         try {
+          // 1、存在线程局部变量sqlSession（不提交、不回滚、不关闭，可在线程生命周期内，自定义sqlSession的提交、回滚、关闭时机，达到复用sqlSession的效果）
           return method.invoke(sqlSession, args);
         } catch (Throwable t) {
           throw ExceptionUtil.unwrapThrowable(t);
         }
       } else {
+        // 2、不存在线程局部变量sqlSession，创建一个自动提交、回滚、关闭的SqlSession（提交、回滚、关闭，将sqlSession的生命周期完全限定在方法内部）
+       //sqlSession的生命周期，应该放到函数方法内部
         final SqlSession autoSqlSession = openSession();
         try {
           final Object result = method.invoke(autoSqlSession, args);
