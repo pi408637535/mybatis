@@ -69,7 +69,8 @@ public class JdbcTransaction implements Transaction {
   }
   
   /**
-   * commit()功能 使用connection的commit() 
+   * commit()功能 使用connection的commit()
+   * 对于JDBC来说，autoCommit=false时，是自动开启事务的，执行commit()后，该事务结束
    * @throws SQLException
    */
   @Override

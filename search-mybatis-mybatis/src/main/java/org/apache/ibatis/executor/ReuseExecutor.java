@@ -36,7 +36,9 @@ import org.apache.ibatis.transaction.Transaction;
  * @author Clinton Begin
  */
 public class ReuseExecutor extends BaseExecutor {
-
+  //依赖Map<String, Statement>来完成对Statement的重用的（用完不关）
+  //在doFlushStatements用来处理这些Statement对象的,进行关闭
+  //关闭时机,在BaseExecutor执行commit,rollback前将会执行flushStatements()方法。
   private final Map<String, Statement> statementMap = new HashMap<String, Statement>();
 
   public ReuseExecutor(Configuration configuration, Transaction transaction) {
@@ -72,11 +74,14 @@ public class ReuseExecutor extends BaseExecutor {
     Statement stmt;
     BoundSql boundSql = handler.getBoundSql();
     String sql = boundSql.getSql();
+    // sql是key，不同的sql，将产生不同的Statement
     if (hasStatementFor(sql)) {
+      // 从statementMap中获取Statement
       stmt = getStatement(sql);
     } else {
       Connection connection = getConnection(statementLog);
       stmt = handler.prepare(connection);
+      // 将Statement放到statementMap中
       putStatement(sql, stmt);
     }
     handler.parameterize(stmt);
