@@ -50,6 +50,7 @@ public class XMLScriptBuilder extends BaseBuilder {
   }
 
   public SqlSource parseScriptNode() {
+    //解析select|insert|update|delete标签体，生成一系列的SqlNode
     List<SqlNode> contents = parseDynamicTags(context);
     MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
     SqlSource sqlSource = null;
@@ -77,10 +78,12 @@ public class XMLScriptBuilder extends BaseBuilder {
         }
       } else if (child.getNode().getNodeType() == Node.ELEMENT_NODE) { // issue #628
         String nodeName = child.getNode().getNodeName();
+        //不同的标签用对应的NodeHandler处理
         NodeHandler handler = nodeHandlers(nodeName);
         if (handler == null) {
           throw new BuilderException("Unknown element <" + nodeName + "> in SQL statement.");
         }
+        //如果还有动态的标签，递归调用parseDynamicTags
         handler.handleNode(child, contents);
         isDynamic = true;
       }

@@ -82,6 +82,12 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     }
   }
 
+  /**
+   * 创建了一个PrepareStatement对象，parameterize()则委托给ParameterHandler去设置。
+   * 对于ParameterHandler，它只有一个唯一的实现类：DefaultParameterHandler.setParameter()。
+   * @param statement
+   * @throws SQLException
+   */
   @Override
   public void parameterize(Statement statement) throws SQLException {
 	//使用ParameterHandler对象来完成对Statement的设值 

@@ -43,11 +43,13 @@ public class RawSqlSource implements SqlSource {
   public RawSqlSource(Configuration configuration, String sql, Class<?> parameterType) {
     SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(configuration);
     Class<?> clazz = parameterType == null ? Object.class : parameterType;
+    //解析其中的#{},替换成预编译sql中的? 并保存参数映射
     sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<String, Object>());
   }
 
   private static String getSql(Configuration configuration, SqlNode rootSqlNode) {
     DynamicContext context = new DynamicContext(configuration, null);
+    //StaticTextSqlNode的apply方法就是把append静态sql文本
     rootSqlNode.apply(context);
     return context.getSql();
   }

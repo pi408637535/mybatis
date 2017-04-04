@@ -88,9 +88,11 @@ public class XMLIncludeTransformer {
       }
     } else if (source.getNodeType() == Node.ATTRIBUTE_NODE && !variablesContext.isEmpty()) {
       // replace variables in all attribute values
+      // 通过PropertyParser替换所有${xxx}占位符(attribute属性)
       source.setNodeValue(PropertyParser.parse(source.getNodeValue(), variablesContext));
     } else if (source.getNodeType() == Node.TEXT_NODE && !variablesContext.isEmpty()) {
       // replace variables ins all text nodes
+      // 通过PropertyParser替换所有${xxx}占位符(文本节点)
       source.setNodeValue(PropertyParser.parse(source.getNodeValue(), variablesContext));
     }
   }
