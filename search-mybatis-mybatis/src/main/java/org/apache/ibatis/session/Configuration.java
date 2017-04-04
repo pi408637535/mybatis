@@ -149,6 +149,28 @@ public class Configuration {
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
+  /**
+   * mapped和incomplete对象由来
+   *  案例：
+   *  <resultMap type="Student" id="StudentResult" extends="Parent">
+       <id property="studId" column="stud_id" />
+      <result property="name" column="name" />
+      <result property="email" column="email" />
+      <result property="dob" column="dob" />
+      </resultMap>
+
+      <resultMap type="Student" id="Parent">
+      <result property="phone" column="phone" />
+      </resultMap>
+   *  Mapper.xml中的很多元素，是可以指定父元素的，像上面extends="Parent"。然而，Mybatis解析元素时，是按顺序解析的，
+   *  于是先解析的id="StudentResult"的元素，然而该元素继承自id="Parent"的元素，但是，Parent被配置在下面了，还没有解析到，
+   *  内存中尚不存在，怎么办呢？Mybatis就把id="StudentResult"的元素标记为incomplete的，然后继续解析后续元素。
+   *  等程序把id="Parent"的元素也解析完后，再回过头来解析id="StudentResult"的元素，就可以正确继承父元素的内容。
+   *　　简言之就是，你的父元素可以配置在你的后边，不限制非得配置在前面。无论你配置在哪儿，
+   * Mybatis都能“智能”的获取到，并正确继承。
+   * 　这便是在Configuration对象内，有的叫mapped，有的叫incomplete的原因。
+   */
+
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection");
   protected final Map<String, Cache> caches = new StrictMap<Cache>("Caches collection");
   protected final Map<String, ResultMap> resultMaps = new StrictMap<ResultMap>("Result Maps collection");
@@ -815,16 +837,28 @@ public class Configuration {
       this.name = name;
     }
 
+    /**
+     * Mybatis重写了put方法，将id和namespace+id的键，都put了进去，指向同一个MappedStatement对象。
+     * 如果shortKey键值存在，就填充为占位符对象Ambiguity，属于覆盖操作
+     * 这样做的好处是，方便我们编程。
+     * Student std  = sqlSession.selectOne("findStudentById", 1);
+     * Student std  = sqlSession.selectOne("com.mybatis3.mappers.StudentMapper.findStudentById", 1);
+     * @param key
+     * @param value
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public V put(String key, V value) {
       if (containsKey(key)) {
         throw new IllegalArgumentException(name + " already contains value for " + key);
       }
       if (key.contains(".")) {
+        // 不存在shortKey键值，放进去
         final String shortKey = getShortName(key);
         if (super.get(shortKey) == null) {
           super.put(shortKey, value);
         } else {
+          // 存在shortKey键值，填充占位对象Ambiguity
           super.put(shortKey, (V) new Ambiguity(shortKey));
         }
       }
@@ -836,6 +870,12 @@ public class Configuration {
       if (value == null) {
         throw new IllegalArgumentException(name + " does not contain value for " + key);
       }
+      //get时，如果得到的是一个占位对象Ambiguity，就抛出异常，要求使用full name进行调用。full name就是namespace+id。Ambiguity意为模糊不清。
+      /**
+       * 1. 保证shortKey（即id）不重复。（好像有点难度，不推荐）
+       * 2. 使用绑定Mapper接口调用方法，因为它总是转换为full name调用。（Mybatis最佳实践，推荐）
+       * 3. 直接使用字符串full name调用。（退而求其次的方式，不推荐）
+       */
       if (value instanceof Ambiguity) {
         throw new IllegalArgumentException(((Ambiguity) value).getSubject() + " is ambiguous in " + name
             + " (try using the full name including the namespace, or rename one of the entries)");
