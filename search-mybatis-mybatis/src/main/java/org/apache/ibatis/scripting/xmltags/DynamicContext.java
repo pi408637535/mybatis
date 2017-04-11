@@ -38,10 +38,15 @@ public class DynamicContext {
     OgnlRuntime.setPropertyAccessor(ContextMap.class, new ContextAccessor());
   }
 
+  //OGNL 使用的上下文
   private final ContextMap bindings;
+  //记录 Sql 的 StringBuilder
   private final StringBuilder sqlBuilder = new StringBuilder();
   private int uniqueNumber = 0;
 
+  /**
+   *  构造方法的主要工作就是创建 ContextMap 的实例 bindings，这个 bindings 是用于在 OGNL 表达式当中解析 sql 时候使用。
+   */
   public DynamicContext(Configuration configuration, Object parameterObject) {
     if (parameterObject != null && !(parameterObject instanceof Map)) {
       MetaObject metaObject = configuration.newMetaObject(parameterObject);

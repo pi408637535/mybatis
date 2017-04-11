@@ -37,6 +37,7 @@ public class ParameterExpression extends HashMap<String, String> {
   private static final long serialVersionUID = -2417552199605158680L;
 
   public ParameterExpression(String expression) {
+    //在 parse 方法当中第一步是跳过空白符， 执行 skipWS 方法。
     parse(expression);
   }
 
@@ -80,7 +81,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
     return expression.length();
   }
-
+//skipUntil 主要作用就是如果字符串 expression 从 p 索引开始，遇到了 endChars 当中的某个字符，就返回这个字符当前的索引。
   private int skipUntil(String expression, int p, final String endChars) {
     for (int i = p; i < expression.length(); i++) {
       char c = expression.charAt(i);

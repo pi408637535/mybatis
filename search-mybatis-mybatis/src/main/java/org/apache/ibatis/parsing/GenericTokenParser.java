@@ -18,6 +18,10 @@ package org.apache.ibatis.parsing;
 /**
  * @author Clinton Begin
  * 这个类是对常用Token进行parser的类
+ *
+ * 一般使用 GenericTokenParser 的方式如下：
+ * GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
+ * String sql = parser.parse(originalSql);
  */
 public class GenericTokenParser {
 
