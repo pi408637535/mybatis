@@ -178,11 +178,13 @@ public class DefaultSqlSession implements SqlSession {
   /**
    * sql的新增、删除、修改都走该方法，然后调用BaseExecutor类的方法
    * SqlSession中执行了任何一个update操作(update()、delete()、insert()) ，
-   * 都会清空PerpetualCache对象的数据，但是该对象可以继续使用；
+   * 都会清空PerpetualCache对象的数据，但是该对象可以继续使用;
+   *
    */
   @Override
   public int update(String statement, Object parameter) {
     try {
+      //
       dirty = true;
       MappedStatement ms = configuration.getMappedStatement(statement);
       return executor.update(ms, wrapCollection(parameter));
@@ -288,6 +290,14 @@ public class DefaultSqlSession implements SqlSession {
     executor.clearLocalCache();
   }
 
+  /**
+   * 事务是否回滚，依靠isCommitOrRollbackRequired(false)方法来判断。
+   * autoCommit 如果置为false,force=false 最终是否回滚事务，只有dirty参数了
+   * dirty含义为是否是脏数据。
+   * 在update() 方法。dirty初始值设置为true,只有在rollback()、close()等方法后，才会再次设置dirty=false。
+   * 得出结论：autoCommit=false，但是没有手动commit，在sqlSession.close()时，
+   * Mybatis会将事务进行rollback()操作，然后才执行conn.close()关闭连接，当然数据最终也就没能持久化到数据库中了。
+   */
   private boolean isCommitOrRollbackRequired(boolean force) {
     return (!autoCommit && dirty) || force;
   }

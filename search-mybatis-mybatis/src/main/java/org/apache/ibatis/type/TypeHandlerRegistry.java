@@ -34,10 +34,13 @@ import org.apache.ibatis.io.ResolverUtil;
  * @author Clinton Begin
  */
 public final class TypeHandlerRegistry {
-
+  // EnumMap，保存Mybatis内部提供的枚举JdbcType类型和对应的TypeHandler
   private final Map<JdbcType, TypeHandler<?>> JDBC_TYPE_HANDLER_MAP = new EnumMap<JdbcType, TypeHandler<?>>(JdbcType.class);
+  // Type：javaType的Class类型(Type是Class的接口)，value是一个Map集合（比如String，可能对应数据库的clob、char、varchar等，所以是一对多关系）
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> TYPE_HANDLER_MAP = new HashMap<Type, Map<JdbcType, TypeHandler<?>>>();
+  // Type：javaType的Class类型(Type是Class的接口)，value是一个Map集合（比如String，可能对应数据库的clob、char、varchar等，所以是一对多关系）
   private final TypeHandler<Object> UNKNOWN_TYPE_HANDLER = new UnknownTypeHandler(this);
+  // 所有的TypeHandler. Key：TypeHandler的Class类型，value：TypeHandler实例（都是singleton
   private final Map<Class<?>, TypeHandler<?>> ALL_TYPE_HANDLERS_MAP = new HashMap<Class<?>, TypeHandler<?>>();
 
   public TypeHandlerRegistry() {

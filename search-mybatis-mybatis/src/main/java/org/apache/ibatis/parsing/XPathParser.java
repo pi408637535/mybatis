@@ -40,6 +40,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
+ *
+ * XPathConstants.STRING：说明获取的目标对象是一个String值。
+ * XPathConstants.NODE：说明获取的目标对象是一个Node节点。
  * XpathParser的作用是提供根据Xpath表达式获取基本的DOM节点Node信息的操作
  * @author Clinton Begin
  */
@@ -49,6 +52,7 @@ public class XPathParser {
   private boolean validation;
   private EntityResolver entityResolver;
   private Properties variables;
+  //XPath，是针对Xml的“正则表达式”。
   private XPath xpath;
 
   public XPathParser(String xml) {
@@ -147,6 +151,9 @@ public class XPathParser {
   /**
    * evalXXX函数有两种多态形式：除了expression参数外还包含一个root参数。
    * 像我们经常见到的那样，带一个参数的evalXXX函数会在设置一个默认值后调用带有两个参数的函数，
+   *
+   * XPathConstants.STRING：说明获取的目标对象是一个String值。
+   * XPathConstants.NODE：说明获取的目标对象是一个Node节点。
    * @param root
    * @param expression
    * @return

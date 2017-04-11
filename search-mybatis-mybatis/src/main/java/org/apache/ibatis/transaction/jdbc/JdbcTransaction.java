@@ -32,6 +32,7 @@ import org.apache.ibatis.transaction.TransactionException;
  * Delays connection retrieval until getConnection() is called.
  * Ignores commit or rollback requests when autocommit is on.
  * 使用JDBC的事务管理机制：即利用java.sql.Connection对象完成对事务的提交（commit()）、回滚（rollback()）、关闭（close()）等
+ * Mybatis 默认的事务管理实现类，就和它的名字一样，它就是我们常说的JDBC事务的极简封装
  * @see JdbcTransactionFactory
  */
 /**
@@ -68,7 +69,8 @@ public class JdbcTransaction implements Transaction {
   }
   
   /**
-   * commit()功能 使用connection的commit() 
+   * commit()功能 使用connection的commit()
+   * 对于JDBC来说，autoCommit=false时，是自动开启事务的，执行commit()后，该事务结束
    * @throws SQLException
    */
   @Override
@@ -96,12 +98,15 @@ public class JdbcTransaction implements Transaction {
   }
 
   /**
+   * connection.close()不意味着真的要销毁conn，而是要把conn放回连接池，
+   * 供下一次使用，既然还要使用，自然就需要重置AutoCommit属性了。通过生成connection代理类，来实现重回连接池的功能
    * close()功能 使用connection的close() 
    * @throws SQLException
    */
   @Override
   public void close() throws SQLException {
     if (connection != null) {
+      //resetAutoCommit()，含义为重置autoCommit属性值
       resetAutoCommit();
       if (log.isDebugEnabled()) {
         log.debug("Closing JDBC Connection [" + connection + "]");

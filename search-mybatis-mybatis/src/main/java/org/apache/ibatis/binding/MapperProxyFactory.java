@@ -24,6 +24,7 @@ import org.apache.ibatis.session.SqlSession;
 
 /**
  * @author Lasse Voss
+ * Mapper接口将通过MapperProxyFactory创建动态代理对象
  */
 public class MapperProxyFactory<T> {
 

@@ -23,6 +23,15 @@ import java.sql.SQLException;
  * Handles the connection lifecycle that comprises: its creation, preparation, commit/rollback and close. 
  *
  * @author Clinton Begin
+ *
+ * 一说到事务，人们可能又会想起create、begin、commit、rollback、close、suspend。
+ * 可实际上，只有commit、rollback是实际存在的，剩下的create、begin、close、suspend都是虚幻的，是业务层或数据库底层应用语意，而非JDBC事务的真实命令。
+ *
+ * create（事务创建）：不存在。
+ * begin（事务开始）：姑且认为存在于DB的命令行中，比如Mysql的start transaction命令，以及其他数据库中的begin transaction命令。JDBC中不存在。
+ * close（事务关闭）：不存在。应用程序接口中的close()方法，是为了把connection放回数据库连接池中，供下一次使用，与事务毫无关系。
+ * suspend（事务挂起）：不存在。Spring中事务挂起的含义是，需要新事务时，将现有的connection1保存起来（它还有尚未提交的事务），然后创建connection2，connection2提交、回滚、关闭完毕后，再把connection1取出来，完成提交、回滚、关闭等动作，保存connection1的动作称之为事务挂起。在JDBC中，是根本不存在事务挂起的说法的，也不存在这样的接口方法。
+ * 记住事务的三个真实存在的方法，不要被各种事务状态名词所迷惑，它们分别是：conn.setAutoCommit()、conn.commit()、conn.rollback()。
  */
 public interface Transaction {
 

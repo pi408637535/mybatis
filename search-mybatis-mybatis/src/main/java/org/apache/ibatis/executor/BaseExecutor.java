@@ -115,7 +115,7 @@ public abstract class BaseExecutor implements Executor {
       throw new ExecutorException("Executor was closed.");
     }
     clearLocalCache();
-    return doUpdate(ms, parameter);
+    return (ms, parameter);
   }
 
   @Override
@@ -305,7 +305,7 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
-  protected abstract int doUpdate(MappedStatement ms, Object parameter)
+  protected abstract int (MappedStatement ms, Object parameter)
       throws SQLException;
 
   protected abstract List<BatchResult> doFlushStatements(boolean isRollback)

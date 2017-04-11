@@ -82,6 +82,11 @@ public class SimpleStatementHandler extends BaseStatementHandler {
     }
   }
 
+  /**
+   * 创建了一个Statement对象，由于Statement对象不支持“?”参数，所以，parameterize()是空实现。
+   * @param statement
+   * @throws SQLException
+   */
   @Override
   public void parameterize(Statement statement) throws SQLException {
     // N/A

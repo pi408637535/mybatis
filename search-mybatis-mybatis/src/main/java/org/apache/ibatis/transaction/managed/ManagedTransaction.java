@@ -31,7 +31,7 @@ import org.apache.ibatis.transaction.Transaction;
  * Ignores all commit or rollback requests.
  * By default, it closes the connection but can be configured not to do it.
  * 使用MANAGED的事务管理机制：这种机制MyBatis自身不会去实现事务管理，
- * 而是让程序的容器如（JBOSS，Weblogic）来实现对事务的管理,
+ * 而是让程序的容器如（JBOSS，Weblogic，Spring）来实现对事务的管理,
  * ManagedTransaction让容器来管理事务Transaction的整个生命周期，意思就是说，
  * 使用ManagedTransaction的commit和rollback功能不会对事务有任何的影响，
  * 它什么都不会做，它将事务管理的权利移交给了容器来实现。
